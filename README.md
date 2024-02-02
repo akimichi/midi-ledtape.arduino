@@ -3,6 +3,7 @@ midi-ledtape.arduino
 
 M5Atom Lite に接続したLEDテープを、MIDI信号によって制御する。
 
+72個のLED
 
 ■　255,　0,　0
 ■　255,　165,　0

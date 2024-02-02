@@ -2,7 +2,7 @@
 #include <FastLED.h>
 
 #define DATA_PIN        26  // LEDテープ信号端子
-#define NUM_LEDS  15  // LEDの数
+#define NUM_LEDS  72  // LEDの数
 
 CRGB leds[NUM_LEDS];
 
@@ -28,11 +28,16 @@ void loop() {
   clear();
   // Initialize device LEDs to on (red), one at a time
   // Serial.println("Showing LEDs");
+  for(int num=0; num<NUM_LEDS; num++) {
+    fill_solid(&(leds[0]), NUM_LEDS, CHSV(num, 150, 150));
+    FastLED.show();
+    delay(50);
+  }
   // for(int num=0; num<NUM_LEDS; num++) {
   //   Serial.println(num);
   //   leds[num] = CRGB::Red;
   //   FastLED.show(); 
-  //   delay(50);
+  //   delay(1000);
   // }
 }
 
