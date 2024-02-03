@@ -20,17 +20,27 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *payload, int data_len) {
     Serial.print(payload[i]);
     Serial.print(" ");
   }
+  uint8_t command = payload[0];
+  uint8_t channel = payload[1];
+  uint8_t note = payload[2];
+  uint8_t velocity = payload[3];
+  Serial.print("command: "); Serial.println(command);
+  Serial.print("channel: "); Serial.println(channel);
+  Serial.print("note: "); Serial.println(note);
+  Serial.print("velocity: "); Serial.println(velocity);
   switch(payload[0])      // Get the type of the message we caught
   {
     case MidiType::NoteOn:
       Serial.println("NoteOn");
       // payload: command chan note velocity
       // MIDI.sendNoteOn(payload[2],payload[3],payload[1]);  // ノートオン(pitch 42, velo 127 on channel 1)
-      fill_solid(&(leds[0]), NUM_LEDS, CHSV((payload[2]%13)*20, 150, payload[3]));
+      // fill_solid(&(leds[payload[2]]), NUM_LEDS, CHSV((payload[2]%13)*20, 300, payload[3]));
+      // fill_solid(leds, NUM_LEDS, CHSV((note%13)*20, 300, velocity));
+      leds[note - 24] = CHSV((note % 12)*30, 255, payload[3]);
       break;
     case MidiType::NoteOff:
       Serial.println("NoteOff");
-      leds[payload[2] % 13] = CRGB::Black;
+      leds[note - 24] = CRGB::Black;
 
       // MIDI.sendNoteOff(payload[2],payload[3],payload[1]);  // 
       break;
@@ -76,6 +86,7 @@ void setup() {
   } 
   esp_now_register_recv_cb(OnDataRecv);
 
+  clear();
 }
 
 void clear(){
