@@ -36,7 +36,8 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *payload, int data_len) {
       // MIDI.sendNoteOn(payload[2],payload[3],payload[1]);  // ノートオン(pitch 42, velo 127 on channel 1)
       // fill_solid(&(leds[payload[2]]), NUM_LEDS, CHSV((payload[2]%13)*20, 300, payload[3]));
       // fill_solid(leds, NUM_LEDS, CHSV((note%13)*20, 300, velocity));
-      leds[note - 24] = CHSV((note % 12)*30, 255, payload[3]);
+
+      leds[note - 24] = CHSV(map((note % 12)*30, 0, 12*30, 0, 255), 255, map(payload[3], 0, 127, 0, 255));
       break;
     case MidiType::NoteOff:
       Serial.println("NoteOff");
