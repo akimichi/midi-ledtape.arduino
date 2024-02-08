@@ -30,6 +30,8 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *payload, int data_len) {
   Serial.print("velocity: "); Serial.println(velocity);
   switch(payload[0])      // Get the type of the message we caught
   {
+    case MidiType::InvalidType:
+      clear();
     case MidiType::NoteOn:
       Serial.println("NoteOn");
       // payload: command chan note velocity
@@ -42,8 +44,6 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *payload, int data_len) {
     case MidiType::NoteOff:
       Serial.println("NoteOff");
       leds[note - 24] = CRGB::Black;
-
-      // MIDI.sendNoteOff(payload[2],payload[3],payload[1]);  // 
       break;
     case MidiType::ProgramChange:
       Serial.println("ProgramChange");
