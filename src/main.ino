@@ -32,6 +32,7 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *payload, int data_len) {
   {
     case MidiType::InvalidType:
       clear();
+      break;
     case MidiType::NoteOn:
       Serial.println("NoteOn");
       // payload: command chan note velocity
