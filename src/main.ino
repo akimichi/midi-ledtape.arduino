@@ -8,9 +8,10 @@
 #define NUM_LEDS  72  // LEDの数
 
 CRGB leds[NUM_LEDS];
+int velocity = 0;
+char macStr[18];
 
 void OnDataRecv(const uint8_t *mac_addr, const uint8_t *payload, int data_len) {
-  char macStr[18];
   snprintf(macStr, sizeof(macStr), "%02X:%02X:%02X:%02X:%02X:%02X",
       mac_addr[0], mac_addr[1], mac_addr[2], mac_addr[3], mac_addr[4], mac_addr[5]);
   Serial.println();
@@ -28,7 +29,8 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *payload, int data_len) {
   Serial.print("channel: "); Serial.println(channel);
   Serial.print("note: "); Serial.println(note);
   Serial.print("velocity: "); Serial.println(velocity);
-  switch(payload[0])      // Get the type of the message we caught
+
+  switch(command)      // Get the type of the message we caught
   {
     case MidiType::InvalidType:
       clear();
@@ -40,11 +42,13 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *payload, int data_len) {
       // fill_solid(&(leds[payload[2]]), NUM_LEDS, CHSV((payload[2]%13)*20, 300, payload[3]));
       // fill_solid(leds, NUM_LEDS, CHSV((note%13)*20, 300, velocity));
 
-      leds[note - 24] = CHSV(map((note % 12)*30, 0, 12*30, 0, 255), 255, map(payload[3], 0, 127, 0, 255));
+      leds[note - 24] = CHSV(map((note % 12)*30, 0, 12*30, 0, 255), 255, map(velocity, 0, 127, 0, 255));
+      FastLED.show();
       break;
     case MidiType::NoteOff:
       Serial.println("NoteOff");
       leds[note - 24] = CRGB::Black;
+      FastLED.show();
       break;
     case MidiType::ProgramChange:
       Serial.println("ProgramChange");
@@ -65,8 +69,7 @@ void OnDataRecv(const uint8_t *mac_addr, const uint8_t *payload, int data_len) {
     default:
       break;
   }
-  FastLED.show();
-
+  delay(20);
 };
 
 
@@ -96,29 +99,11 @@ void clear(){
   for(int num=0; num<NUM_LEDS; num++) {
     Serial.println(num);
     leds[num] = CRGB::Black;
-    FastLED.show();
-    delay(50);
+    // delay(50);
   }
+  FastLED.show();
 }
-int velocity = 0;
 
-void loop() {
-  // Initialize all device LEDs to off (black), one at a time
-  // clear();
-  // Initialize device LEDs to on (red), one at a time
-  // Serial.println("Showing LEDs");
-  // for(int num=0; num<NUM_LEDS; num++) {
-  //   int modulo = num / 13;
-  //   fill_solid(&(leds[0]), NUM_LEDS, CHSV(modulo*20, 150, 150));
-  //   FastLED.show();
-  //   delay(50);
-  // }
-  // for(int num=0; num<NUM_LEDS; num++) {
-  //   Serial.println(num);
-  //   leds[num] = CRGB::Red;
-  //   FastLED.show(); 
-  //   delay(1000);
-  // }
-}
+void loop() { }
 
 
